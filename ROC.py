@@ -39,6 +39,42 @@ def get_ROC_curve(values, classes):
     return TP, FP;
 
 
+def get_images_and_grid(im_name, segmentation_name, show_images = True):
+    
+    # read RGB image:
+    Im = cv2.imread(im_name);
+    RGB = np.copy(Im);
+    RGB[:,:,0] = Im[:,:,2];
+    RGB[:,:,2] = Im[:,:,0];
+    WIDTH = Im.shape[1];
+    HEIGHT = Im.shape[0];
+    if(show_images):
+        plt.figure();
+        plt.imshow(RGB);
+        plt.title('RGB Image');
+        #cv2.imshow('Image', Im);
+        #cv2.waitKey();
+    
+    # read Classification image:
+    Cl = cv2.imread(segmentation_name);
+    if(show_images):
+        plt.figure();
+        plt.imshow(Cl);
+        plt.title('Classification');
+        #cv2.imshow('Segmentation', Cl);
+        #cv2.waitKey();
+    Cl = cv2.cvtColor(Cl, cv2.COLOR_BGR2GRAY);
+    Cl = Cl.flatten();
+    Cl = Cl > 0;
+    Cl = Cl.astype(float);
+    
+    # make a meshgrid:
+    x, y = np.meshgrid(range(WIDTH), range(HEIGHT));
+    x = x.flatten();
+    y = y.flatten();    
+    
+    return RGB, Cl, x, y;
+
 def ROC_exercise(im_name, segmentation_name, show_images = True):
     
     # read RGB image:
